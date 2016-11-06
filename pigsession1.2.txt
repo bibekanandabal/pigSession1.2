@@ -1,0 +1,31 @@
+a.
+grouped = GROUP the_input BY (employee_details);
+
+top_n =
+FOREACH grouped {
+ordered = ORDER the_input BY rating DESC;
+limited = LIMIT ordered 5;
+GENERATE FLATTEN(limited);
+}
+
+b.
+grouped = GROUP the_input BY (employee_details);
+top_n =
+FOREACH grouped {
+ordered = ORDER the_input BY salary DESC;
+limited = LIMIT ordered 3;
+GENERATE FLATTEN(limited);
+
+c.
+student_gpa_max = foreach employee_expenses
+   (employee_expenses.firstname), MAX(employee_expenses.expense);
+
+d.
+data = LOAD 'employee_expenses' USING PigStorage(',') 
+as (ename:chararray, expense:float);
+all_recs = foreach data generate ename ;
+
+e.
+data = LOAD 'employee_expenses' USING PigStorage(',') 
+as (ename:chararray, expense:float);
+all_recs = foreach data generate ename  not in employee_details;
